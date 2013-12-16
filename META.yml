@@ -19,4 +19,4 @@ requires:
   Scalar::Util: 0
 resources:
   repository: git://github.com/avenj/object-arraytype-new.git
-version: 0.001001
+version: 0.002001
