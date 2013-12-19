@@ -33,7 +33,8 @@
          "requires" : {
             "B" : "0",
             "Carp" : "0",
-            "Scalar::Util" : "0"
+            "Scalar::Util" : "0",
+            "perl" : "v5.8.1"
          }
       },
       "test" : {
@@ -54,6 +55,6 @@
          "web" : "http://github.com/avenj/object-arraytype-new"
       }
    },
-   "version" : "0.002001"
+   "version" : "0.002002"
 }
 

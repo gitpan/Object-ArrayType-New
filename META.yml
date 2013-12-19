@@ -17,6 +17,7 @@ requires:
   B: 0
   Carp: 0
   Scalar::Util: 0
+  perl: v5.8.1
 resources:
   repository: git://github.com/avenj/object-arraytype-new.git
-version: 0.002001
+version: 0.002002

@@ -19,6 +19,7 @@ my @modules = qw(
   ExtUtils::MakeMaker
   Scalar::Util
   Test::More
+  perl
 );
 
 my %exclude = map {; $_ => 1 } qw(

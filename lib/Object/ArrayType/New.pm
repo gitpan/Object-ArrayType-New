@@ -1,6 +1,6 @@
 package Object::ArrayType::New;
 {
-  $Object::ArrayType::New::VERSION = '0.002001';
+  $Object::ArrayType::New::VERSION = '0.002002';
 }
 use strict; use warnings;
 
@@ -123,8 +123,8 @@ Object::ArrayType::New - Inject constants & constructors for ARRAY-type objects
   use strict; use warnings;
   use Object::ArrayType::New
     [ foo => 'FOO', bar => 'BAR' ];
-  sub foo { shift->[FOO] }
-  sub bar { shift->[BAR] ||= [] }
+  sub foo     { shift->[FOO] }
+  sub bar     { shift->[BAR] ||= [] }
 
   package main;
   my $obj = MyObject->new(foo => 'baz');
@@ -132,6 +132,12 @@ Object::ArrayType::New - Inject constants & constructors for ARRAY-type objects
   my $bar = $obj->bar; # []
 
 =head1 DESCRIPTION
+
+ARRAY-backed objects are light and fast, but obviously slightly more
+complicated to cope with than just stuffing key/value pairs into a HASH.
+The easiest way to keep track of where things live is to set up some named
+constants to index into the ARRAY -- you can access your indexes by name,
+and gain compile-time typo checking as an added bonus.
 
 A common thing I find myself doing looks something like:
 
@@ -157,19 +163,21 @@ A common thing I find myself doing looks something like:
 
 ... when I'd rather be doing something more like the L</SYNOPSIS>.
 
-This tiny module takes a list of pairs mapping a C<new()> parameter to the name of
-a constant representing the parameter's position in the backing ARRAY.
+This tiny module takes an ARRAY of pairs mapping a C<new()> parameter name to the
+name of a constant. The constant represents the item's position in the
+object's backing ARRAY.
 
 If the constant's name is boolean false, the uppercased parameter name is
-taken as the name of the constant:
+used as the name of the constant:
 
   use Object::ArrayType::New
     [ foo => '', bar => '' ];
   # same as foo => 'FOO', bar => 'BAR'
 
-If the parameter's name is boolean false, the constant is installed and the
-appropriate position in the backing ARRAY is set to C<undef> at construction
-time; this can be useful for private attributes:
+If the parameter's name is boolean false, there is no construction-time
+parameter. The constant is installed and the appropriate position in the
+backing ARRAY is set to C<undef> at construction time; this can be useful for
+private attributes:
 
   use Object::ArrayType::New
     [ foo => 'FOO', '' => 'BAR' ];
@@ -184,7 +192,7 @@ single HASH. Parameters not specified at construction time are C<undef>.
 
 That's it; no accessors, no defaults, no type-checks, no required attributes,
 nothing fancy. L<Class::Method::Modifiers> may be convenient there; the above
-example could be written something like:
+raw Perl example could be written something like:
 
   use Object::ArrayType::New [ tag => '', buffer => 'BUF' ];
   sub tag    { shift->[TAG] }
@@ -201,7 +209,7 @@ if C<< $ENV{OBJECT_ARRAYTYPE_DEBUG} >> is true, generated code is printed to
 STDERR before being evaluated.
 
 Constants aren't currently sanity-checked ahead of time; attempting to use
-invalid identifiers will result in 'Illegal declaration ...' failures.
+invalid identifiers will result in vague 'Illegal declaration ...' failures.
 
 =head1 AUTHOR
 
