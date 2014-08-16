@@ -1,5 +1,5 @@
 NAME
-    Object::ArrayType::New - Inject constants & constructors for ARRAY-type
+    Object::ArrayType::New - Inject constants and constructor for ARRAY-type
     objects
 
 SYNOPSIS
@@ -46,9 +46,9 @@ DESCRIPTION
 
     ... when I'd rather be doing something more like the "SYNOPSIS".
 
-    This tiny module takes an ARRAY of pairs mapping a "new()" parameter
-    name to the name of a constant. The constant represents the item's
-    position in the object's backing ARRAY.
+    This tiny module takes, as arguments to "import", an ARRAY of pairs
+    mapping a "new()" parameter name to the name of a constant. The constant
+    represents the item's position in the object's backing ARRAY.
 
     If the constant's name is boolean false, the uppercased parameter name
     is used as the name of the constant:

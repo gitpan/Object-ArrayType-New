@@ -1,7 +1,5 @@
 package Object::ArrayType::New;
-{
-  $Object::ArrayType::New::VERSION = '0.002002';
-}
+$Object::ArrayType::New::VERSION = '1.001001';
 use strict; use warnings;
 
 use Carp;
@@ -26,7 +24,8 @@ sub _inject_code {
     unless defined $target and defined $code;
   my $run = "package $target; $code; 1;";
   warn "(eval ->) $run\n" if $ENV{OBJECT_ARRAYTYPE_DEBUG};
-  local $@; eval $run; die $@ if $@;
+  local $@; 
+  eval $run and not $@ or confess "eval: $@";
   1
 }
 
@@ -42,8 +41,7 @@ sub _install_constants {
   my $idx = 0;
   for my $item (@$items) {
     my $constant = $item->{constant};
-    $class->_inject_constant($target => $constant => $idx);
-    $idx++
+    $class->_inject_constant($target => $constant => $idx++);
   }
   1
 }
@@ -55,7 +53,7 @@ sub _validate_and_install {
   my @install;
   PARAM: while (my ($initarg, $def) = splice @items, 0, 2) {
     $initarg = '' unless defined $initarg;
-    my $store = $def ? $def : uc($initarg);
+    my $store = $def ? $def : uc $initarg;
     confess "No init arg and no constant specified!" unless $store;
     push @install, +{
       name     => $initarg,
@@ -115,7 +113,7 @@ unless caller;
 
 =head1 NAME
 
-Object::ArrayType::New - Inject constants & constructors for ARRAY-type objects
+Object::ArrayType::New - Inject constants and constructor for ARRAY-type objects
 
 =head1 SYNOPSIS
 
@@ -163,18 +161,18 @@ A common thing I find myself doing looks something like:
 
 ... when I'd rather be doing something more like the L</SYNOPSIS>.
 
-This tiny module takes an ARRAY of pairs mapping a C<new()> parameter name to the
-name of a constant. The constant represents the item's position in the
-object's backing ARRAY.
+This tiny module takes, as arguments to C<import>, an ARRAY of pairs mapping a
+C<new()> parameter name to the name of a constant. The constant represents the
+item's position in the object's backing ARRAY.
 
-If the constant's name is boolean false, the uppercased parameter name is
+If the B<constant>'s name is boolean false, the uppercased parameter name is
 used as the name of the constant:
 
   use Object::ArrayType::New
     [ foo => '', bar => '' ];
   # same as foo => 'FOO', bar => 'BAR'
 
-If the parameter's name is boolean false, there is no construction-time
+If the B<parameter>'s name is boolean false, there is no construction-time
 parameter. The constant is installed and the appropriate position in the
 backing ARRAY is set to C<undef> at construction time; this can be useful for
 private attributes:
